@@ -1,23 +1,48 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import Logo from './components/Logo';
+import Form from './components/Form';
+import PackingList from './components/PackingList';
+
+const initialItems = [
+  { id: 1, description: "préparer un projet", packed: false },
+  { id: 2, description: "gestion de base donnée", packed: false },
+  { id: 3, description: "méthode agile", packed: false },
+  
+];
 
 function App() {
+  const [items, setItems] = useState(initialItems);
+
+  function addItem(description) {
+    const newTache = { description, packed: false, id: Date.now() };
+    setItems([...items, newTache]);
+  }
+
+  function toggleItem(id) {
+    const updatedItems = items.map((item) => {
+      if (item.id === id) {
+        return { ...item, packed: !item.packed };
+      }
+      return item;
+    });
+    setItems(updatedItems);
+  }
+
+  function removeItem(id) {
+    const updatedItems = items.filter((item) => item.id !== id);
+    setItems(updatedItems);
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Logo />
+      <Form addItem={addItem} />
+      <PackingList
+        items={items}
+        toggleItem={toggleItem}
+        removeItem={removeItem}
+      />
     </div>
   );
 }
